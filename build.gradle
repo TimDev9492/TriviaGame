@@ -1,0 +1,15 @@
+plugins {
+    id 'java'
+}
+
+group = 'me.timwastaken'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    implementation 'me.timwastaken:trivia-api:1.0-SNAPSHOT'
+}
