@@ -5,6 +5,7 @@ import triviaapi.data.TriviaQuestionData;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
@@ -15,6 +16,24 @@ public class Main {
 
         try (Scanner sc = new Scanner(System.in)) {
             while (true) {
+                System.out.println("Choose a category:");
+                List<String> categories = new ArrayList<>();
+                categories.addAll(triviaAPI.getAvailableCategories());
+                Collections.shuffle(categories);
+                for (int i = 1; i <= 3; i++) {
+                    System.out.println(String.format("%d - %s", i, categories.get(i)));
+                }
+                String selection = sc.nextLine();
+                String categoryName = null;
+                if (!selection.isEmpty()) {
+                    try {
+                        int index = Integer.parseInt(selection);
+                        categoryName = categories.get(index);
+                    } catch (NumberFormatException e) {
+                        continue;
+                    }
+                }
+
                 System.out.println("What type of question do you want? [m/b]");
                 String mode = sc.nextLine();
                 if (!mode.equals("m") && !mode.equals("b")) continue;
@@ -29,25 +48,6 @@ public class Main {
                     case "h" -> QuestionDifficulty.HARD;
                     default -> throw new IllegalStateException("Unexpected value: " + level);
                 };
-
-                System.out.println("Choose a category:");
-                int i = 0;
-                for (String category : triviaAPI.getAvailableCategories()) {
-                    System.out.println(String.format("%d - %s", i++, category));
-                }
-                String selection = sc.nextLine();
-                String categoryName = null;
-                if (!selection.isEmpty()) {
-                    try {
-                        int index = Integer.parseInt(selection);
-                        categoryName = triviaAPI.getAvailableCategories().stream()
-                                .skip(index)
-                                .findFirst()
-                                .orElse(null);
-                    } catch (NumberFormatException e) {
-                        continue;
-                    }
-                }
 
                 TriviaQuestionData question = triviaAPI.getTriviaQuestions(1, categoryName, difficulty, type).getFirst();
                 System.out.println(String.format("Question: %s", question.question()));
